@@ -1,0 +1,21 @@
+{
+    "manifest_version": 2,
+
+    "name": "naver",
+    "description": "chrome navigator extension",
+    "version": "1.0",
+
+    "browser_action": {
+        "default_icon": "icon.png",
+        "default_popup": "popup.html",
+        "default_title": "naver"
+    },
+    "permissions": [
+        "activeTab",
+        "https://ajax.googleapis.com/"
+    ],
+    "content_scripts": [{
+        "matches": ["*://*/*"],
+        "js": ["injector.js"]
+    }]
+}

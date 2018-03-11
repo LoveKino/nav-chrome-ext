@@ -1,0 +1,1 @@
+- fix shadow-dom style bug
