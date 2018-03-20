@@ -10,6 +10,8 @@ const {
 const pageSignalActionMap = require('./pageSignalAction');
 const SearchPage = require('./pageView/searchPage');
 
+const store = require('./store');
+
 const shadowRootDiv = document.createElement('div');
 document.body.appendChild(shadowRootDiv);
 
@@ -32,6 +34,7 @@ const toggelPage = () => {
             }
         }, [
             n(SearchPage, {
+                searchSentence: window.location.href,
                 onsignal: signalActionFlow(pageSignalActionMap['searchPage'], {}, {
                     variableMap: {
                         search: (sentence) => {
@@ -68,3 +71,9 @@ const handler = (e) => {
 
 // toggelPage();
 document.addEventListener('keydown', handler, true);
+
+/*
+store.loadConfig('http://127.0.0.1:8000/config.json').then((config) => {
+    console.log(config);
+});
+*/
