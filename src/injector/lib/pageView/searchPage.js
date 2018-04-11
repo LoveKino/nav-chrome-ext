@@ -7,6 +7,7 @@ const {
 } = require('kabanery-lumine');
 const Input = require('kabanery-lumine/lib/view/input/input');
 const Full = require('kabanery-lumine/lib/view/layout/full');
+const Fold = require('kabanery-lumine/lib/view/fold/fold');
 const {
   DO_SEARCH
 } = require('../signals');
@@ -48,6 +49,12 @@ module.exports = SimplePager(lumineView(({
     }
   }, [
     n('form', {
+      style: {
+        position: 'fixed',
+        top: 8,
+        width: '90%',
+        left: '5%'
+      },
       onsubmit: (e) => {
         e.preventDefault();
         ctx.notify(DO_SEARCH);
@@ -57,40 +64,26 @@ module.exports = SimplePager(lumineView(({
         'searchSentence': 'value'
       })(Input, {
         style: {
-          top: 8,
-          width: 560
+          width: '100%',
+          fontSize: 16
         }
       })
     ]),
 
     n('div', {
       style: {
-        marginTop: 10,
-        textAlign: 'left',
-        padding: 16
+        marginTop: 40,
+        padding: 16,
+        width: '50%'
       }
-    }, _.map(classifyHistory(props.history), (items, prefix) => {
-      return n('div', {
+    }, [
+      n('div', {
         style: {
-          padding: 8
+          textAlign: 'left',
+          backgroundColor: 'white'
         }
-      }, [
-        n('a', {
-          href: prefix,
-          style: {
-            fontSize: 16,
-            color: 'rgb(44, 152, 240)'
-          }
-        }, prefix),
-        n('div', {
-          style: {
-            padding: 8,
-            maxHeight: 200,
-            overflow: 'scroll'
-          }
-        }, _.map(items, renderUrlItem))
-      ]);
-    }))
+      }, _.map(classifyHistory(props.history), renderUrlItems))
+    ])
   ]);
 }, {
   defaultProps: {
@@ -98,6 +91,28 @@ module.exports = SimplePager(lumineView(({
     history: []
   }
 }));
+
+const renderUrlItems = (items, prefix) => {
+  return n(Fold, {
+    hide: true
+  }, [
+    n('a', {
+      href: prefix,
+      style: {
+        fontSize: 16,
+        color: 'rgb(44, 152, 240)'
+      }
+    }, prefix),
+
+    n('div', {
+      style: {
+        padding: 8,
+        maxHeight: 200,
+        overflow: 'scroll'
+      }
+    }, _.map(items, renderUrlItem))
+  ]);
+};
 
 const renderUrlItem = ({
   url,
