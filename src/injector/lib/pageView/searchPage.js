@@ -76,7 +76,8 @@ module.exports = SimplePager(lumineView(({
       n('div', {
         style: {
           width: '100%',
-          backgroundColor: 'white',
+          backgroundColor: 'rgb(50, 50, 50)',
+          color: 'white',
           textAlign: 'left',
           padding: 8,
           boxSizing: 'border-box',
@@ -91,6 +92,8 @@ module.exports = SimplePager(lumineView(({
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
+              color: 'white',
+              padding: '6px 0',
               display: 'block'
             }
           }, sug);
