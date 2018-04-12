@@ -42,7 +42,7 @@ const _ = require('lodash');
 module.exports = SimplePager(lumineView(({
   props
 }, ctx) => {
-  const sugs = getSugs(props.history, props.searchSentence);
+  const sugs = props.searchSentence.trim() === '' ? [] : getSugs(props.history, props.searchSentence);
 
   return n(Full, {
     style: {
@@ -73,7 +73,7 @@ module.exports = SimplePager(lumineView(({
         }
       }),
 
-      n('div', {
+      sugs.length && n('div', {
         style: {
           width: '100%',
           backgroundColor: 'rgb(50, 50, 50)',
