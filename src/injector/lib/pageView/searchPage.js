@@ -79,7 +79,8 @@ module.exports = SimplePager(lumineView(({
           backgroundColor: 'white',
           textAlign: 'left',
           padding: 8,
-          height: 300,
+          boxSizing: 'border-box',
+          maxHeight: 300,
           overflow: 'scroll'
         }
       }, [
