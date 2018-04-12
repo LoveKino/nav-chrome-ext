@@ -27,7 +27,7 @@
     "webpack-cli": "^2.0.11"
   },
   "dependencies": {
-    "kabanery-lumine": "0.0.65",
+    "kabanery-lumine": "0.0.66",
     "kabanery-signal-flow": "0.0.5",
     "lodash": "^4.17.5"
   }

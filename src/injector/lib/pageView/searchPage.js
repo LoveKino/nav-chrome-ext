@@ -42,6 +42,8 @@ const _ = require('lodash');
 module.exports = SimplePager(lumineView(({
   props
 }, ctx) => {
+  const sugs = getSugs(props.history, props.searchSentence);
+
   return n(Full, {
     style: {
       textAlign: 'center',
@@ -60,27 +62,58 @@ module.exports = SimplePager(lumineView(({
         ctx.notify(DO_SEARCH);
       }
     }, [
-      ctx.bn({
-        'searchSentence': 'value'
-      })(Input, {
+      n(Input, {
         style: {
           width: '100%',
           fontSize: 16
+        },
+        value: props.searchSentence,
+        onsignal: (signal, childCtx) => {
+          ctx.update('props.searchSentence', childCtx.props.value);
         }
-      })
+      }),
+
+      n('div', {
+        style: {
+          width: '100%',
+          backgroundColor: 'white',
+          textAlign: 'left',
+          padding: 8,
+          height: 300,
+          overflow: 'scroll'
+        }
+      }, [
+        sugs.map((sug) => {
+          return n('a', {
+            href: sug,
+            style: {
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              display: 'block'
+            }
+          }, sug);
+        })
+      ])
     ]),
 
     n('div', {
       style: {
-        marginTop: 40,
-        padding: 16,
+        marginTop: 60,
+        padding: '0 8px',
+        backgroundColor: 'white',
         width: '50%'
       }
     }, [
+      n('h3', {
+        style: {
+          padding: 0,
+          margin: 0
+        }
+      }, 'History'),
       n('div', {
         style: {
-          textAlign: 'left',
-          backgroundColor: 'white'
+          textAlign: 'left'
         }
       }, _.map(classifyHistory(props.history), renderUrlItems))
     ])
@@ -137,6 +170,12 @@ const renderUrlItem = ({
       }
     }, [url])
   ]);
+};
+
+const getSugs = (history, keyword) => {
+  return history.filter((item) => {
+    return item.url.indexOf(keyword) !== -1;
+  }, {}).map(item => item.url);
 };
 
 const classifyHistory = (history) => {
