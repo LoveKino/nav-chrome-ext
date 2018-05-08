@@ -7,6 +7,7 @@ const {
 } = require('kabanery-lumine');
 const Input = require('kabanery-lumine/lib/view/input/input');
 const Full = require('kabanery-lumine/lib/view/layout/full');
+const Fold = require('kabanery-lumine/lib/view/fold/fold');
 const {
   DO_SEARCH
 } = require('../signals');
@@ -41,6 +42,8 @@ const _ = require('lodash');
 module.exports = SimplePager(lumineView(({
   props
 }, ctx) => {
+  const sugs = props.searchSentence.trim() === '' ? [] : getSugs(props.history, props.searchSentence);
+
   return n(Full, {
     style: {
       textAlign: 'center',
@@ -48,49 +51,76 @@ module.exports = SimplePager(lumineView(({
     }
   }, [
     n('form', {
+      style: {
+        position: 'fixed',
+        top: 8,
+        width: '90%',
+        left: '5%'
+      },
       onsubmit: (e) => {
         e.preventDefault();
         ctx.notify(DO_SEARCH);
       }
     }, [
-      ctx.bn({
-        'searchSentence': 'value'
-      })(Input, {
+      n(Input, {
         style: {
-          top: 8,
-          width: 560
+          width: '100%',
+          fontSize: 16
+        },
+        value: props.searchSentence,
+        onsignal: (signal, childCtx) => {
+          ctx.update('props.searchSentence', childCtx.props.value);
         }
-      })
+      }),
+
+      sugs.length && n('div', {
+        style: {
+          width: '100%',
+          backgroundColor: 'rgb(50, 50, 50)',
+          color: 'white',
+          textAlign: 'left',
+          padding: 8,
+          boxSizing: 'border-box',
+          maxHeight: 300,
+          overflow: 'scroll'
+        }
+      }, [
+        sugs.map((sug) => {
+          return n('a', {
+            href: sug,
+            style: {
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              color: 'white',
+              padding: '6px 0',
+              display: 'block'
+            }
+          }, sug);
+        })
+      ])
     ]),
 
     n('div', {
       style: {
-        marginTop: 10,
-        textAlign: 'left',
-        padding: 16
+        marginTop: 60,
+        padding: '0 8px',
+        backgroundColor: 'white',
+        width: '50%'
       }
-    }, _.map(classifyHistory(props.history), (items, prefix) => {
-      return n('div', {
+    }, [
+      n('h3', {
         style: {
-          padding: 8
+          padding: 0,
+          margin: 0
         }
-      }, [
-        n('a', {
-          href: prefix,
-          style: {
-            fontSize: 16,
-            color: 'rgb(44, 152, 240)'
-          }
-        }, prefix),
-        n('div', {
-          style: {
-            padding: 8,
-            maxHeight: 200,
-            overflow: 'scroll'
-          }
-        }, _.map(items, renderUrlItem))
-      ]);
-    }))
+      }, 'History'),
+      n('div', {
+        style: {
+          textAlign: 'left'
+        }
+      }, _.map(classifyHistory(props.history), renderUrlItems))
+    ])
   ]);
 }, {
   defaultProps: {
@@ -98,6 +128,28 @@ module.exports = SimplePager(lumineView(({
     history: []
   }
 }));
+
+const renderUrlItems = (items, prefix) => {
+  return n(Fold, {
+    hide: true
+  }, [
+    n('a', {
+      href: prefix,
+      style: {
+        fontSize: 16,
+        color: 'rgb(44, 152, 240)'
+      }
+    }, prefix),
+
+    n('div', {
+      style: {
+        padding: 8,
+        maxHeight: 200,
+        overflow: 'scroll'
+      }
+    }, _.map(items, renderUrlItem))
+  ]);
+};
 
 const renderUrlItem = ({
   url,
@@ -122,6 +174,12 @@ const renderUrlItem = ({
       }
     }, [url])
   ]);
+};
+
+const getSugs = (history, keyword) => {
+  return history.filter((item) => {
+    return item.url.indexOf(keyword) !== -1;
+  }, {}).map(item => item.url);
 };
 
 const classifyHistory = (history) => {

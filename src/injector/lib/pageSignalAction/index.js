@@ -1,10 +1,10 @@
 'use strict';
 
 const {
-    DO_SEARCH
+  DO_SEARCH
 } = require('../signals');
 const {
-    wrapBaseSignalActions
+  wrapBaseSignalActions
 } = require('kabanery-lumine/lib/flow/baseSignalActions');
 
 /**
@@ -33,7 +33,7 @@ const {
  * tree-script: https://github.com/LoveKino/tree-script
  */
 module.exports = wrapBaseSignalActions({
-    searchPage: {
-        [DO_SEARCH]: ['search(.props.searchSentence)']
-    }
+  searchPage: {
+    [DO_SEARCH]: ['search(.props.searchSentence)']
+  }
 });
